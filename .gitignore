@@ -1,0 +1,12 @@
+# Build and Object Folders
+bin/
+obj/
+TestResults/
+
+#User Specific Files
+*.user
+*.suo
+
+#Resource Caches
+_ReSharper.*
+*.sln.cache
