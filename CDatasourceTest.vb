@@ -11,15 +11,28 @@ Imports ADODB.LockTypeEnum
 
         Dim conADO As ADODB.Connection = New ADODB.Connection
         Dim rstTemp As ADODB.Recordset = New ADODB.Recordset
-        Dim fldTemp As ADODB.Field
+        Dim rstTest As ADODB.Recordset = New ADODB.Recordset
+        Dim success As Integer
+        
+        ConnectDB(conADO, My.Application.Info.DirectoryPath, "mdb_sadbel.mdb")
 
-        ConnectDB(conADO, "C:\ClearingPoint\Data", "mdb_sadbel.mdb")
+        RstOpen("SELECT * FROM [PLDA IMPORT HEADER] WHERE [CODE] = '000000993949532508849'", conADO, rstTemp, adOpenKeyset, adLockOptimistic)
 
-        RstOpen("SELECT * FROM [PLDA IMPORT HEADER]", conADO, rstTemp, adOpenKeyset, adLockOptimistic)
+        If rstTemp.RecordCount > 0 Then
+            rstTemp.MoveFirst()
+            rstTemp.Fields("A4").Value = "20081206"
+            rstTemp.Fields("A5").Value = "VP442020"
 
-        For Each fldTemp In rstTemp.Fields
-            Debug.Print(fldTemp.Name & " - " & fldTemp.Value)
-        Next fldTemp
+            success = source.Update(rstTemp, rstTemp.Bookmark)
+            Assert.IsTrue(success = 0)
+
+            RstOpen("SELECT * FROM [PLDA IMPORT HEADER] WHERE [CODE] = '000000993949532508849'", conADO, rstTest, adOpenKeyset, adLockOptimistic)
+            Assert.AreEqual("20081206", rstTest.Fields("A4").Value)
+            Assert.AreEqual("VP442020", rstTest.Fields("A5").Value)
+
+            RstClose(rstTemp)
+            RstClose(rstTest)
+        End If
     End Sub
 
 End Class
