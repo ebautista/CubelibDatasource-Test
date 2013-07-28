@@ -1,0 +1,20 @@
+# database can be any of the following:
+#		ACCESS - Microsoft Access
+#		SQLSERVER - SQL SErver
+#		ORACLE - Oracle Server - Not yet supported
+database=ACCESS
+
+# servername consist of machine name + server instance name
+#servername=EDWIN-PC/SQLFULL
+
+# default admin username for SQL server is "sa"
+username=sa
+
+# password should not be here or this file should be encrypted
+password=wack2
+
+# set to TRUE if you want to print DEBUG Trace logs
+debug=TRUE
+
+# database path override when registry key is not found
+MdbPath=C:\Users\Edwin\Documents\GitHub\CubelibDatasource-Test\bin\Debug
