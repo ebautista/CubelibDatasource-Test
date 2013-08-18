@@ -51,7 +51,7 @@ Imports CubelibDatasource.CDatasource
 
             'Use CubelibDatasource Update method
             Dim wrapperClass As New CRecordset(rstTemp, strCon)
-            success = source.Update(wrapperClass, rstTemp.Bookmark, SadbelTableType.PLDA_IMPORT_HEADER)
+            success = source.UpdateSadbel(wrapperClass, rstTemp.Bookmark, 117)
             Assert.IsTrue(success = 0)
 
             'Confirm that the changes has been saved to DB
@@ -69,7 +69,7 @@ Imports CubelibDatasource.CDatasource
 
             'Revert to original data
             wrapperClass = New CRecordset(rstTest, strCon)
-            success = source.Update(wrapperClass, rstTest.Bookmark, SadbelTableType.PLDA_IMPORT_HEADER)
+            success = source.UpdateSadbel(wrapperClass, rstTest.Bookmark, 117)
             Assert.IsTrue(success = 0)
 
             RstClose(rstTemp)
@@ -109,7 +109,7 @@ Imports CubelibDatasource.CDatasource
 
             'Use CubelibDatasource Update method
             Dim wrapperClass As New CRecordset(rstTemp, strCon)
-            success = source.Update(wrapperClass, rstTemp.Bookmark, SadbelTableType.PLDA_IMPORT_HEADER)
+            success = source.UpdateSadbel(wrapperClass, rstTemp.Bookmark, 117)
             Assert.IsTrue(success = 0)
 
             'Confirm that the changes has been saved to DB
@@ -127,7 +127,7 @@ Imports CubelibDatasource.CDatasource
 
             'Revert to original data 
             wrapperClass = New CRecordset(rstTest, strCon)
-            success = source.Update(wrapperClass, rstTest.Bookmark, SadbelTableType.PLDA_IMPORT_HEADER)
+            success = source.UpdateSadbel(wrapperClass, rstTest.Bookmark, 117)
             Assert.IsTrue(success = 0)
 
             RstClose(rstTemp)
@@ -166,7 +166,7 @@ Imports CubelibDatasource.CDatasource
 
             'Use CubelibDatasource Update method
             Dim wrapperClass As New CRecordset(rstTemp, strCon)
-            success = source.Update(wrapperClass, rstTemp.Bookmark, SadbelTableType.PLDA_IMPORT_HEADER)
+            success = source.UpdateSadbel(wrapperClass, rstTemp.Bookmark, 117)
             Assert.IsTrue(success = 0)
 
             'Confirm that the changes has been saved to DB
@@ -183,7 +183,7 @@ Imports CubelibDatasource.CDatasource
 
             'Revert to original data
             wrapperClass = New CRecordset(rstTest, strCon)
-            success = source.Update(wrapperClass, rstTest.Bookmark, SadbelTableType.PLDA_IMPORT_HEADER)
+            success = source.UpdateSadbel(wrapperClass, rstTest.Bookmark, 117)
             Assert.IsTrue(success = 0)
 
             RstClose(rstTemp)
