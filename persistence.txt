@@ -5,10 +5,10 @@
 database=ACCESS
 
 # servername consist of machine name + server instance name
-#servername=EDWIN-PC/SQLFULL
+servername=EDWIN-PC\SQLFULL
 
 # default admin username for SQL server is "sa"
-username=sa
+username=clearingpoint
 
 # password should not be here or this file should be encrypted
 password=wack2
