@@ -2,7 +2,7 @@
 #		ACCESS - Microsoft Access
 #		SQLSERVER - SQL SErver
 #		ORACLE - Oracle Server - Not yet supported
-database=ACCESS
+database=SQLSERVER
 
 # servername consist of machine name + server instance name
 servername=EDWIN-PC\SQLFULL
