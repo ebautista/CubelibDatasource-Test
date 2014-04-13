@@ -209,5 +209,35 @@ Imports System.IO.Compression
             Assert.IsTrue(success = 0)
         End If
     End Sub
-End Class
 
+    <TestMethod()> Public Sub TestGetEnumFromTableName()
+        Dim result As Integer
+
+        result = source.GetEnumFromTableName(SadbelTableType.AUTHORIZED_PARTIES.ToString, DBInstanceType.DATABASE_SADBEL)
+        Assert.IsTrue(result = 0)
+
+        result = source.GetEnumFromTableName(DataTableType.MASTER.ToString, DBInstanceType.DATABASE_DATA)
+        Assert.IsTrue(result = 1)
+
+        result = source.GetEnumFromTableName(EdiHistoryTableType.DATA_NCTS_BERICHT_DOUANEKANTOOR.ToString, DBInstanceType.DATABASE_EDI_HISTORY)
+        Assert.IsTrue(result = 3)
+
+        result = source.GetEnumFromTableName(EdifactTableType.DATA_NCTS_BERICHT_VERVOER.ToString, DBInstanceType.DATABASE_EDIFACT)
+        Assert.IsTrue(result = 6)
+
+        result = source.GetEnumFromTableName(SadbelHistoryTableType.IMPORT_HEADER.ToString, DBInstanceType.DATABASE_HISTORY)
+        Assert.IsTrue(result = 16)
+
+        result = source.GetEnumFromTableName(RepertoryTableType.Fields.ToString, DBInstanceType.DATABASE_REPERTORY)
+        Assert.IsTrue(result = 4)
+
+        result = source.GetEnumFromTableName(SchedulerTableType.Archiver_Properties.ToString, DBInstanceType.DATABASE_SCHEDULER)
+        Assert.IsTrue(result = 0)
+
+        result = source.GetEnumFromTableName(TaricTableType.COMMON.ToString, DBInstanceType.DATABASE_TARIC)
+        Assert.IsTrue(result = 2)
+
+        result = source.GetEnumFromTableName(TemplateCPTableType.DBProps.ToString, DBInstanceType.DATABASE_TEMPLATE)
+        Assert.IsTrue(result = 10)
+    End Sub
+End Class
