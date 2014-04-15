@@ -240,4 +240,11 @@ Imports System.IO.Compression
         result = source.GetEnumFromTableName(TemplateCPTableType.DBProps.ToString, DBInstanceType.DATABASE_TEMPLATE)
         Assert.IsTrue(result = 10)
     End Sub
+
+    <TestMethod()> Public Sub TestSelectEdifact()
+        Dim rstTemp As ADODB.Recordset
+
+        rstTemp = source.ExecuteQuery("SELECT TOP 1 * FROM [DATA_NCTS]", DBInstanceType.DATABASE_EDIFACT)
+        Assert.AreEqual(0, rstTemp.RecordCount)
+    End Sub
 End Class
