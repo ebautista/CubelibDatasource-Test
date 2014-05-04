@@ -17,10 +17,15 @@ Imports System.IO.Compression
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000958309650421142', 1, 'IM', 'Z', 'P945304849540810005250', '20081208', 'VP442026')", CDatasource.DBInstanceType.DATABASE_SADBEL)
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000372680902481079', 1, 'IM', 'Y', 'P945304849540810005255', '20081209', 'VP442029')", CDatasource.DBInstanceType.DATABASE_SADBEL)
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000757792890071868', 1, 'IM', 'Z', 'P945304849540810005286', '20081210', 'VP442037')", CDatasource.DBInstanceType.DATABASE_SADBEL)
+
+        source.ExecuteNonQuery("INSERT INTO [DATA_NCTS] ([DATA_NCTS_MSG_ID], [CODE], [LOGID DESCRIPTION], [TYPE], [COMM], [USER NO], [LAST MODIFIED BY]) VALUES  (678, '054524877079401395030', 'DHL', 'T', 'S', 3, 'Olivier')", CDatasource.DBInstanceType.DATABASE_EDIFACT)
+
+        source.ExecuteNonQuery("INSERT INTO [Tree] ([LEVEL], [PARENT ID], [TREE ID], [ROOT ID], [DESCRIPTION], [IMAGE], [PICTURE]) VALUES  (1, 'ROOT', '2014', '2014', 'Root for 2014', 1, 1)", CDatasource.DBInstanceType.DATABASE_REPERTORY)
     End Sub
 
     <TestCleanup()> Public Sub Cleanup()
         source.ExecuteNonQuery("DELETE FROM [PLDA IMPORT HEADER]", CDatasource.DBInstanceType.DATABASE_SADBEL)
+        source.ExecuteNonQuery("DELETE FROM [DATA_NCTS]", CDatasource.DBInstanceType.DATABASE_EDIFACT)
         source = Nothing
     End Sub
 
@@ -245,6 +250,85 @@ Imports System.IO.Compression
         Dim rstTemp As ADODB.Recordset
 
         rstTemp = source.ExecuteQuery("SELECT TOP 1 * FROM [DATA_NCTS]", DBInstanceType.DATABASE_EDIFACT)
-        Assert.AreEqual(0, rstTemp.RecordCount)
+        Assert.AreEqual(1, rstTemp.RecordCount)
+    End Sub
+
+    <TestMethod()> Public Sub TestUpdateSingleRecordQueriedEdifactNoPK()
+        Dim rstTemp As ADODB.Recordset = New ADODB.Recordset
+        Dim rstTest As ADODB.Recordset = New ADODB.Recordset
+        Dim success As Integer
+
+        rstTemp = source.ExecuteQuery("SELECT * FROM [BOX_SEARCH_MAP] WHERE [BOX CODE] = 'AG' AND [NCTS_IEM_TMS_ID] = 316", DBInstanceType.DATABASE_EDIFACT)
+        Assert.AreEqual(1, rstTemp.RecordCount)
+
+        If rstTemp.RecordCount > 0 Then
+            rstTemp.MoveFirst()
+
+            'Store Original Values
+            Dim iemID As Integer = rstTemp.Fields("NCTS_IEM_ID").Value
+            Dim boxCode As String = rstTemp.Fields("BOX CODE").Value
+            Dim iemTmsID As Integer = rstTemp.Fields("NCTS_IEM_TMS_ID").Value
+
+            'Edit A4 and A5
+            rstTemp.Fields("NCTS_IEM_ID").Value = 4
+
+            'Use CubelibDatasource Update method
+            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
+            success = source.UpdateEdifact(wrapperClass, EdifactTableType.BOX_SEARCH_MAP)
+
+            'Update did not succeed because table has no primary key
+            Assert.IsTrue(success = -1)
+        End If
+    End Sub
+
+    <TestMethod()> Public Sub TestUpdateSingleRecordQueriedEdifact()
+        Dim rstTemp As ADODB.Recordset = New ADODB.Recordset
+        Dim rstTest As ADODB.Recordset = New ADODB.Recordset
+        Dim success As Integer
+
+        rstTemp = source.ExecuteQuery("SELECT * FROM [DATA_NCTS] WHERE [CODE] = '054524877079401395030'", DBInstanceType.DATABASE_EDIFACT)
+        Assert.AreEqual(1, rstTemp.RecordCount)
+
+        If rstTemp.RecordCount > 0 Then
+            rstTemp.MoveFirst()
+
+            'Store Original Values
+            Dim code As String = rstTemp.Fields("CODE").Value
+            Dim logID As String = rstTemp.Fields("LOGID DESCRIPTION").Value
+            Dim type As String = rstTemp.Fields("TYPE").Value
+
+            'Edit LOGID DESCRIPTION and TYPE
+            rstTemp.Fields("LOGID DESCRIPTION").Value = "LBC"
+            rstTemp.Fields("TYPE").Value = "T"
+
+            'Use CubelibDatasource Update method
+            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
+            success = source.UpdateEdifact(wrapperClass, EdifactTableType.DATA_NCTS)
+            Assert.IsTrue(success = 0)
+
+            'Confirm that the changes has been saved to DB
+            Threading.Thread.Sleep(1000)
+            rstTest = source.ExecuteQuery("SELECT * FROM [DATA_NCTS] WHERE [CODE] = '" & code & "'", DBInstanceType.DATABASE_EDIFACT)
+
+            Assert.AreEqual(1, rstTest.RecordCount)
+            Assert.AreEqual("LBC", rstTest.Fields("LOGID DESCRIPTION").Value)
+            Assert.AreEqual("T", rstTest.Fields("TYPE").Value)
+
+            rstTest.MoveFirst()
+            rstTest.Fields("LOGID DESCRIPTION").Value = logID
+            rstTest.Fields("TYPE").Value = type
+
+            'Revert to original data
+            wrapperClass = New CRecordset(rstTest, rstTest.Bookmark)
+            success = source.UpdateEdifact(wrapperClass, EdifactTableType.DATA_NCTS)
+            Assert.IsTrue(success = 0)
+        End If
+    End Sub
+
+    <TestMethod()> Public Sub TestSelectRepertory()
+        Dim rstTemp As ADODB.Recordset
+
+        rstTemp = source.ExecuteQuery("SELECT TOP 1 * FROM [Tree]", DBInstanceType.DATABASE_REPERTORY)
+        Assert.AreEqual(1, rstTemp.RecordCount)
     End Sub
 End Class

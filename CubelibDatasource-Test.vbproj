@@ -135,6 +135,9 @@
     <Content Include="edifact.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="mdb_repertory.mdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="mdb_sadbel.mdb">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
