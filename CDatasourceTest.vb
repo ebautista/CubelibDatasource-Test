@@ -12,6 +12,8 @@ Imports System.IO.Compression
     Private source As CDatasource = New CDatasource
 
     <TestInitialize()> Public Sub Init()
+        source.SetPersistencePath(AppDomain.CurrentDomain.BaseDirectory)
+
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000993949532508849', 1, 'IM', 'Z', 'P945304849540810005246', '20081206', 'VP442020')", CDatasource.DBInstanceType.DATABASE_SADBEL)
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000237661242485047', 1, 'IM', 'Y', 'P945304849540810005248', '20081207', 'VP442023')", CDatasource.DBInstanceType.DATABASE_SADBEL)
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000958309650421142', 1, 'IM', 'Z', 'P945304849540810005250', '20081208', 'VP442026')", CDatasource.DBInstanceType.DATABASE_SADBEL)
@@ -218,7 +220,7 @@ Imports System.IO.Compression
     <TestMethod()> Public Sub TestGetEnumFromTableName()
         Dim result As Integer
 
-        result = source.GetEnumFromTableName(SadbelTableType.AUTHORIZED_PARTIES.ToString, DBInstanceType.DATABASE_SADBEL)
+        result = source.GetEnumFromTableName(SadbelTableType.AUTHORIZEDPARTIES.ToString, DBInstanceType.DATABASE_SADBEL)
         Assert.IsTrue(result = 0)
 
         result = source.GetEnumFromTableName(DataTableType.MASTER.ToString, DBInstanceType.DATABASE_DATA)
@@ -331,4 +333,49 @@ Imports System.IO.Compression
         rstTemp = source.ExecuteQuery("SELECT TOP 1 * FROM [Tree]", DBInstanceType.DATABASE_REPERTORY)
         Assert.AreEqual(1, rstTemp.RecordCount)
     End Sub
+
+    <TestMethod()> Public Sub TestInsertIdentity()
+        Dim rstTemp As ADODB.Recordset = New ADODB.Recordset
+        Dim rstTest As ADODB.Recordset = New ADODB.Recordset
+        Dim identity As Integer
+
+        rstTemp = source.ExecuteQuery("SELECT * FROM [AuthorizedParties] WHERE 1=0", DBInstanceType.DATABASE_SADBEL)
+
+        'Add new record to Recordset
+        rstTemp.AddNew()
+
+        'Insert Values
+        rstTemp.Fields("Auth_Name").Value() = "CANDS"
+
+        'Use CubelibDatasource Update method
+        Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
+        identity = source.InsertSadbel(wrapperClass, SadbelTableType.AUTHORIZEDPARTIES)
+        Assert.IsTrue(identity = 1)
+
+        rstTemp = source.ExecuteQuery("SELECT * FROM [AuthorizedParties] WHERE 1=0", DBInstanceType.DATABASE_SADBEL)
+
+        'Add new record to Recordset
+        rstTemp.AddNew()
+
+        'Insert Values
+        rstTemp.Fields("Auth_Name").Value() = "CANDS"
+
+        'Use CubelibDatasource Update method
+        Dim wrapperClass2 As New CRecordset(rstTemp, rstTemp.Bookmark)
+        identity = source.InsertSadbel(wrapperClass2, SadbelTableType.AUTHORIZEDPARTIES)
+        Assert.IsTrue(identity = 2)
+
+    End Sub
+
+    <TestMethod()> Public Sub TestCreateDropTable()
+        Dim success As Integer
+
+        success = source.ExecuteNonQuery("CREATE TABLE TEST_TABLE (FirstName CHAR, LastName CHAR)", DBInstanceType.DATABASE_SADBEL)
+        Assert.AreEqual(0, success)
+
+        success = source.ExecuteNonQuery("DROP TABLE TEST_TABLE", DBInstanceType.DATABASE_SADBEL)
+        Assert.AreEqual(0, success)
+    End Sub
+
+   
 End Class
