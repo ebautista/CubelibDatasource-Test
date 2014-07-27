@@ -377,5 +377,27 @@ Imports System.IO.Compression
         Assert.AreEqual(0, success)
     End Sub
 
-   
+    <TestMethod()> Public Sub TestInsertPLDAMessages()
+        Dim rstTemp As ADODB.Recordset = New ADODB.Recordset
+        Dim rstTest As ADODB.Recordset = New ADODB.Recordset
+        Dim identity As Integer
+
+        rstTemp = source.ExecuteQuery("SELECT * FROM [PLDA MESSAGES] WHERE 1=0", DBInstanceType.DATABASE_SADBEL)
+
+        'Add new record to Recordset
+        rstTemp.AddNew()
+
+        'Insert Values
+        rstTemp.Fields("Code").Value() = "000000092479884624482"
+        rstTemp.Fields("DType").Value = 18
+        rstTemp.Fields("Message_Date").Value = Now
+        rstTemp.Fields("Message_StatusType").Value = "Document"
+        rstTemp.Fields("User_ID").Value = 1
+        rstTemp.Fields("Message_Reference").Value = "1402000377961000106278"
+
+        'Use CubelibDatasource Update method
+        Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
+        identity = source.InsertSadbel(wrapperClass, SadbelTableType.PLDA_MESSAGES)
+        Assert.IsTrue(identity = 1)
+    End Sub
 End Class
