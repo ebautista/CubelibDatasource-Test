@@ -400,4 +400,11 @@ Imports System.IO.Compression
         identity = source.InsertSadbel(wrapperClass, SadbelTableType.PLDA_MESSAGES)
         Assert.IsTrue(identity = 1)
     End Sub
+
+    <TestMethod()> Public Sub TestDefaultViewColumns()
+        Dim rstTemp As ADODB.Recordset
+
+        rstTemp = source.ExecuteQuery("SELECT TOP 1 * FROM [DefaultViewColumns]", DBInstanceType.DATABASE_TEMPLATE)
+        Assert.AreEqual(1, rstTemp.RecordCount)
+    End Sub
 End Class
