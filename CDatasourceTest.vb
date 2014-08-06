@@ -9,9 +9,10 @@ Imports System.IO.Compression
 
 <TestClass()> Public Class CDatasourceTest
 
-    Private source As CDatasource = New CDatasource
+    Private source As CDatasource
 
     <TestInitialize()> Public Sub Init()
+        source = New CDatasource
         source.SetPersistencePath(AppDomain.CurrentDomain.BaseDirectory)
 
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000993949532508849', 1, 'IM', 'Z', 'P945304849540810005246', '20081206', 'VP442020')", CDatasource.DBInstanceType.DATABASE_SADBEL)
@@ -28,6 +29,8 @@ Imports System.IO.Compression
     <TestCleanup()> Public Sub Cleanup()
         source.ExecuteNonQuery("DELETE FROM [PLDA IMPORT HEADER]", CDatasource.DBInstanceType.DATABASE_SADBEL)
         source.ExecuteNonQuery("DELETE FROM [DATA_NCTS]", CDatasource.DBInstanceType.DATABASE_EDIFACT)
+        source.ExecuteNonQuery("DELETE FROM [Tree]", CDatasource.DBInstanceType.DATABASE_REPERTORY)
+        source.Dispose()
         source = Nothing
     End Sub
 
@@ -399,6 +402,7 @@ Imports System.IO.Compression
         Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
         identity = source.InsertSadbel(wrapperClass, SadbelTableType.PLDA_MESSAGES)
         Assert.IsTrue(identity = 1)
+
     End Sub
 
     <TestMethod()> Public Sub TestDefaultViewColumns()
