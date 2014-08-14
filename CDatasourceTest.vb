@@ -216,7 +216,7 @@ Imports System.IO.Compression
 
             'Remove inserted data 
             success = source.ExecuteNonQuery("DELETE FROM [PLDA IMPORT HEADER] WHERE [CODE] = '" & strCode & "'", CDatasource.DBInstanceType.DATABASE_SADBEL)
-            Assert.IsTrue(success = 0)
+            Assert.IsTrue(success = 1)
         End If
     End Sub
 
