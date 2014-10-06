@@ -1,11 +1,12 @@
 ﻿Imports System.Text
 Imports Microsoft.VisualStudio.TestTools.UnitTesting
-Imports CubelibDatasource
+Imports CubeLibDataSource
 Imports ADODB.CursorTypeEnum
 Imports ADODB.LockTypeEnum
-Imports CubelibDatasource.CDatasource
+Imports CubeLibDataSource.CDatasource
 Imports System.IO
 Imports System.IO.Compression
+Imports System.Drawing
 
 <TestClass()> Public Class CDatasourceTest
 
@@ -13,7 +14,7 @@ Imports System.IO.Compression
 
     <TestInitialize()> Public Sub Init()
         source = New CDatasource
-        source.SetPersistencePath(AppDomain.CurrentDomain.BaseDirectory)
+        source.Open(AppDomain.CurrentDomain.BaseDirectory)
 
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000993949532508849', 1, 'IM', 'Z', 'P945304849540810005246', '20081206', 'VP442020')", CDatasource.DBInstanceType.DATABASE_SADBEL)
         source.ExecuteNonQuery("INSERT INTO [PLDA IMPORT HEADER] ([Code], [Header], [A1], [A2], [A3], [A4], [A5]) VALUES  ('000000237661242485047', 1, 'IM', 'Y', 'P945304849540810005248', '20081207', 'VP442023')", CDatasource.DBInstanceType.DATABASE_SADBEL)
@@ -55,9 +56,8 @@ Imports System.IO.Compression
             rstTemp.Fields("A5").Value = "VP442020"
 
             'Use CubelibDatasource Update method
-            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-            success = source.UpdateSadbel(wrapperClass, SadbelTableType.PLDA_IMPORT_HEADER)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateSadbel(rstTemp, SadbelTableType.PLDA_IMPORT_HEADER)
+            Assert.IsTrue(success = 1)
 
             'Confirm that the changes has been saved to DB
             Threading.Thread.Sleep(1000)
@@ -72,9 +72,8 @@ Imports System.IO.Compression
             rstTest.Fields("A5").Value = strOriginalA5
 
             'Revert to original data
-            wrapperClass = New CRecordset(rstTest, rstTest.Bookmark)
-            success = source.UpdateSadbel(wrapperClass, SadbelTableType.PLDA_IMPORT_HEADER)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateSadbel(rstTest, SadbelTableType.PLDA_IMPORT_HEADER)
+            Assert.IsTrue(success = 1)
         End If
     End Sub
 
@@ -102,9 +101,8 @@ Imports System.IO.Compression
             rstTemp.Fields("A5").Value = "VP442027"
 
             'Use CubelibDatasource Update method
-            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-            success = source.UpdateSadbel(wrapperClass, SadbelTableType.PLDA_IMPORT_HEADER)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateSadbel(rstTemp, SadbelTableType.PLDA_IMPORT_HEADER)
+            Assert.IsTrue(success = 1)
 
             'Confirm that the changes has been saved to DB
             Threading.Thread.Sleep(1000)
@@ -119,9 +117,8 @@ Imports System.IO.Compression
             rstTest.Fields("A5").Value = strOriginalA5
 
             'Revert to original data 
-            wrapperClass = New CRecordset(rstTest, rstTest.Bookmark)
-            success = source.UpdateSadbel(wrapperClass, SadbelTableType.PLDA_IMPORT_HEADER)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateSadbel(rstTest, SadbelTableType.PLDA_IMPORT_HEADER)
+            Assert.IsTrue(success = 1)
         End If
     End Sub
 
@@ -149,9 +146,8 @@ Imports System.IO.Compression
             rstTemp.Fields("A5").Value = "VP442055"
 
             'Use CubelibDatasource Update method
-            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-            success = source.UpdateSadbel(wrapperClass, SadbelTableType.PLDA_IMPORT_HEADER)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateSadbel(rstTemp, SadbelTableType.PLDA_IMPORT_HEADER)
+            Assert.IsTrue(success = 1)
 
             'Confirm that the changes has been saved to DB
             Threading.Thread.Sleep(1000)
@@ -166,9 +162,8 @@ Imports System.IO.Compression
             rstTest.Fields("A5").Value = strOriginalA5
 
             'Revert to original data
-            wrapperClass = New CRecordset(rstTest, rstTest.Bookmark)
-            success = source.UpdateSadbel(wrapperClass, SadbelTableType.PLDA_IMPORT_HEADER)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateSadbel(rstTest, SadbelTableType.PLDA_IMPORT_HEADER)
+            Assert.IsTrue(success = 1)
         End If
     End Sub
 
@@ -184,7 +179,6 @@ Imports System.IO.Compression
         If rstTemp.RecordCount > 0 Then
             'Add new record to Recordset
             rstTemp.AddNew()
-            'Assert.AreEqual(6, rstTemp.RecordCount)
 
             'Insert Values
             Dim strCode As String = "000000993949532508811"
@@ -197,8 +191,7 @@ Imports System.IO.Compression
             rstTemp.Fields("A5").Value() = "VP442069"
 
             'Use CubelibDatasource Update method
-            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-            success = source.InsertSadbel(wrapperClass, SadbelTableType.PLDA_IMPORT_HEADER)
+            success = source.InsertSadbel(rstTemp, SadbelTableType.PLDA_IMPORT_HEADER)
             Assert.IsTrue(success = 0)
 
             'Confirm that the changes has been saved to DB
@@ -278,8 +271,7 @@ Imports System.IO.Compression
             rstTemp.Fields("NCTS_IEM_ID").Value = 4
 
             'Use CubelibDatasource Update method
-            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-            success = source.UpdateEdifact(wrapperClass, EdifactTableType.BOX_SEARCH_MAP)
+            success = source.UpdateEdifact(rstTemp, EdifactTableType.BOX_SEARCH_MAP)
 
             'Update did not succeed because table has no primary key
             Assert.IsTrue(success = -1)
@@ -307,9 +299,8 @@ Imports System.IO.Compression
             rstTemp.Fields("TYPE").Value = "T"
 
             'Use CubelibDatasource Update method
-            Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-            success = source.UpdateEdifact(wrapperClass, EdifactTableType.DATA_NCTS)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateEdifact(rstTemp, EdifactTableType.DATA_NCTS)
+            Assert.IsTrue(success = 1)
 
             'Confirm that the changes has been saved to DB
             Threading.Thread.Sleep(1000)
@@ -324,9 +315,8 @@ Imports System.IO.Compression
             rstTest.Fields("TYPE").Value = type
 
             'Revert to original data
-            wrapperClass = New CRecordset(rstTest, rstTest.Bookmark)
-            success = source.UpdateEdifact(wrapperClass, EdifactTableType.DATA_NCTS)
-            Assert.IsTrue(success = 0)
+            success = source.UpdateEdifact(rstTest, EdifactTableType.DATA_NCTS)
+            Assert.IsTrue(success = 1)
         End If
     End Sub
 
@@ -351,8 +341,7 @@ Imports System.IO.Compression
         rstTemp.Fields("Auth_Name").Value() = "CANDS"
 
         'Use CubelibDatasource Update method
-        Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-        identity = source.InsertSadbel(wrapperClass, SadbelTableType.AUTHORIZEDPARTIES)
+        identity = source.InsertSadbel(rstTemp, SadbelTableType.AUTHORIZEDPARTIES)
         Assert.IsTrue(identity = 1)
 
         rstTemp = source.ExecuteQuery("SELECT * FROM [AuthorizedParties] WHERE 1=0", DBInstanceType.DATABASE_SADBEL)
@@ -364,8 +353,7 @@ Imports System.IO.Compression
         rstTemp.Fields("Auth_Name").Value() = "CANDS"
 
         'Use CubelibDatasource Update method
-        Dim wrapperClass2 As New CRecordset(rstTemp, rstTemp.Bookmark)
-        identity = source.InsertSadbel(wrapperClass2, SadbelTableType.AUTHORIZEDPARTIES)
+        identity = source.InsertSadbel(rstTemp, SadbelTableType.AUTHORIZEDPARTIES)
         Assert.IsTrue(identity = 2)
 
     End Sub
@@ -399,8 +387,7 @@ Imports System.IO.Compression
         rstTemp.Fields("Message_Reference").Value = "1402000377961000106278"
 
         'Use CubelibDatasource Update method
-        Dim wrapperClass As New CRecordset(rstTemp, rstTemp.Bookmark)
-        identity = source.InsertSadbel(wrapperClass, SadbelTableType.PLDA_MESSAGES)
+        identity = source.InsertSadbel(rstTemp, SadbelTableType.PLDA_MESSAGES)
         Assert.IsTrue(identity = 1)
 
     End Sub
@@ -411,4 +398,17 @@ Imports System.IO.Compression
         rstTemp = source.ExecuteQuery("SELECT TOP 1 * FROM [DefaultViewColumns]", DBInstanceType.DATABASE_TEMPLATE)
         Assert.AreEqual(1, rstTemp.RecordCount)
     End Sub
+
+    '<TestMethod()> Public Sub TestUVCFormatCondition()
+    '    Dim rstTemp As ADODB.Recordset
+    '    Dim objTest As New FTest
+
+    '    rstTemp = source.ExecuteQuery("SELECT TOP 1 * FROM [UVCFormatCondition] WHERE FC_ID = 2032", DBInstanceType.DATABASE_TEMPLATE)
+    '    Assert.AreEqual(1, rstTemp.RecordCount)
+
+    '    MsgBox(Image.FromFile("save.jpeg"))
+    '    objTest.PictureBox1.Image = Image.FromFile("save.jpeg")
+    '    objTest.Show()
+    '    'objTest = Nothing
+    'End Sub
 End Class

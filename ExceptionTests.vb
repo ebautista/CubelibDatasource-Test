@@ -9,7 +9,7 @@ Imports CubelibDatasource.CDatasource
 
     <TestMethod()> Public Sub TestErrorPersistencePath()
         Try
-            source.SetPersistencePath(vbNullString)
+            source.Open(vbNullString)
             Assert.Fail()
         Catch ex As Exception
             Debug.Print(ex.Message)
